@@ -18,29 +18,55 @@ import pickle
 with open("data/pymc_trace.pkl", "rb") as f:
     trace = pickle.load(f)
 
-# Generate MMM summary CSV from PyMC model results
-channels = ["facebook", "paid_search", "youtube"]
-period = "March 2024"
-spend_map = {"facebook": 100000, "paid_search": 150000, "youtube": 80000}
 
-records = []
-for channel in channels:
-    beta_key = f"beta_{channel}"
-    if beta_key in trace.posterior:
-        betas = trace.posterior[beta_key].values.flatten()
-        mean_beta = np.mean(betas)
-        mean_sales = spend_map[channel] * mean_beta
-        roi = mean_sales / spend_map[channel]
-        records.append({
-            "channel": channel,
-            "period": period,
-            "spend": spend_map[channel],
-            "incremental_sales": mean_sales,
-            "roi": roi
-        })
+# Attempt to detect and load associated input data from previous modeling
+import os
 
-mmm_results_df = pd.DataFrame(records)
-mmm_results_df.to_csv("data/mmm_model_summary.csv", index=False)
+input_data_path = "data/input_data.csv"
+
+if os.path.exists(input_data_path):
+    input_df = pd.read_csv(input_data_path)
+
+    # Aggregate spend per channel (mean or sum)
+    spend_map = input_df[["facebook", "paid_search", "youtube"]].mean().to_dict()
+    total_spend = sum(spend_map.values())
+
+    # Re-run summary generation using dataset-based spend
+    channels = list(spend_map.keys())
+    period = "March 2024"
+
+    records = []
+    for channel in channels:
+        beta_key = f"beta_{channel}"
+        if beta_key in trace.posterior:
+            betas = trace.posterior[beta_key].values.flatten()
+            mean_beta = np.mean(betas)
+            ci_lower, ci_upper = np.percentile(betas, [2.5, 97.5])
+            spend = spend_map[channel]
+            mean_sales = spend * mean_beta
+            ci_sales_lower = spend * ci_lower
+            ci_sales_upper = spend * ci_upper
+            roi = mean_sales / spend
+            records.append({
+                "channel": channel,
+                "period": period,
+                "spend": spend,
+                "spend_share": spend / total_spend,
+                "incremental_sales": mean_sales,
+                "incremental_sales_ci_lower": ci_sales_lower,
+                "incremental_sales_ci_upper": ci_sales_upper,
+                "roi": roi
+            })
+
+    mmm_results_df = pd.DataFrame(records)
+    mmm_results_df["roi_normalized"] = mmm_results_df["roi"] / mmm_results_df["roi"].max()
+
+    # Save enhanced summary again
+    dataset_summary_path = "data/mmm_model_summary.csv"
+    mmm_results_df.to_csv(dataset_summary_path, index=False)
+    dataset_summary_path
+else:
+    dataset_summary_path = None
 
 # Sample functions for accessing PyMC-based MMM results
 def get_incremental_sales(channel: str, period: str):
@@ -93,8 +119,8 @@ tools = [
 agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
 
 # Sample queries
-response1 = agent.invoke("How much incremental sales did Facebook drive in March 2024?")
-response2 = agent.invoke("Assume a budget of $200,000 for Paid Search next quarter. What impact would this have on overall marketing performance?")
+response1 = agent.invoke("How much incremental sales did facebook drive in March 2024?")
+response2 = agent.invoke("Assume a budget of $200,000 for paid_search next quarter. What impact would this have on overall marketing performance?")
 response3 = agent.invoke("How should I allocate budget to maximize sales?")
 
 print(response1)
