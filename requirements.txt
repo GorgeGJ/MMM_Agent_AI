@@ -4,7 +4,7 @@ langchain
 langchain-community
 langchain_experimental
 langchain_ollama
-pandas
+pandas<2.2.0
 numpy
 matplotlib
 streamlit
