@@ -5,11 +5,12 @@ import numpy as np
 import pickle
 
 # Example input data (media spend + observed revenue)
+# !pip install "pandas<2.2.0"
 import pandas as pd
 import numpy as np
 
 # Set seed for reproducibility
-data = pd.read_csv('data/simulated_mmm_input')
+data = pd.read_csv('data/simulated_mmm_input.csv')
 
 # Normalize data for modeling
 X = data[['facebook', 'paid_search', 'youtube']] / 100000

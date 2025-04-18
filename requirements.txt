@@ -3,6 +3,7 @@ arviz>=0.15
 langchain
 langchain-community
 langchain_experimental
+langchain_ollama
 pandas
 numpy
 matplotlib

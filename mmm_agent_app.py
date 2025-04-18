@@ -2,8 +2,10 @@
 
 from langchain.agents import Tool, initialize_agent
 from langchain.agents.agent_types import AgentType
-from langchain_community.llms import Ollama
-llm = Ollama(model="llama3", temperature=0)
+# from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
+llm = OllamaLLM(model="llama3", temperature=0)
+
 # from langchain.tools.python import PythonREPLTool
 from langchain_experimental.tools.python.tool import PythonREPLTool
 
