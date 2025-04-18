@@ -38,7 +38,7 @@ ollama run llama3
 
 ### 3. (Optional) Generate a sample data and sample trace from built-in sample data
 ```bash
-python3 data/simulate_data.py
+python3 data/simulate_data.py --samples 10000
 python3 generate_pymc_trace.py
 ```
 
