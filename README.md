@@ -68,7 +68,7 @@ python3 -m streamlit run mmm_agent_app.py
 
 ## 🧪 Simulated Dataset
 
-Want to test large-scale modeling? Use the [simulated 10K dataset](data/input_data.csv) or generate your own via:
+Want to test large-scale modeling? Use the [simulated 10K dataset](data/simulated_mmm_input.csv) or generate your own via:
 ```bash
-python simulate_data.py
+python simulate_data.py --samples 50000
 ```
