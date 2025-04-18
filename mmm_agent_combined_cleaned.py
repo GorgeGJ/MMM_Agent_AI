@@ -89,7 +89,7 @@ if os.path.exists(input_data_path):
     mmm_results_df["roi_normalized"] = mmm_results_df["roi"] / mmm_results_df["roi"].max()
 
     # Save enhanced summary again
-    dataset_summary_path = "/data/mmm_model_summary.csv"
+    dataset_summary_path = "data/mmm_model_summary.csv"
     mmm_results_df.to_csv(dataset_summary_path, index=False)
     dataset_summary_path
 else:
