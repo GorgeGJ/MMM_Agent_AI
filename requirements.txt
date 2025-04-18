@@ -1,4 +1,9 @@
-streamlit
+pymc>=5.0
+arviz>=0.15
 langchain
-openai
-python-dotenv
+langchain-community
+langchain_experimental
+pandas
+numpy
+matplotlib
+streamlit
