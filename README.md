@@ -28,7 +28,7 @@ facebook, paid_search, youtube, revenue
 
 ### 1. Clone the repo and install dependencies
 ```bash
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 ### 2. Start Ollama and load a model
@@ -38,7 +38,7 @@ ollama run llama3
 
 ### 3. (Optional) Generate a sample trace from built-in sample data
 ```bash
-python generate_pymc_trace.py
+python3 generate_pymc_trace.py
 ```
 
 ### 4. Launch the app
@@ -51,7 +51,8 @@ python3 -m streamlit run mmm_agent_app.py
 ## 💬 Example Prompts to Try
 
 - What was the ROI of Facebook in March 2024?
-- Forecast sales if I spend $200K on Paid Search
+- Forecast sales if I spend $200K on Paid Search (not working...)
+- Assume a budget of $200,000 for Paid Search next quarter. What impact would this have on overall marketing performance?
 - How should I allocate budget to maximize sales?
 
 ---
