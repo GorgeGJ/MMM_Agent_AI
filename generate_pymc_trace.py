@@ -9,41 +9,11 @@ import pandas as pd
 import numpy as np
 
 # Set seed for reproducibility
-np.random.seed(42)
-
-# Simulate 10,000 rows of media spend and revenue data
-n = 10000
-facebook_spend = np.random.normal(120000, 20000, size=n).clip(min=0)
-paid_search_spend = np.random.normal(140000, 25000, size=n).clip(min=0)
-youtube_spend = np.random.normal(90000, 15000, size=n).clip(min=0)
-
-# True media contribution coefficients
-true_beta = {
-    "facebook": 0.03,
-    "paid_search": 0.05,
-    "youtube": 0.02
-}
-
-# Simulate revenue with random noise
-revenue = (
-    facebook_spend * true_beta["facebook"] +
-    paid_search_spend * true_beta["paid_search"] +
-    youtube_spend * true_beta["youtube"] +
-    np.random.normal(0, 30000, size=n)  # add noise
-).clip(min=0)
-
-# Combine into DataFrame
-data = pd.DataFrame({
-    "facebook": facebook_spend,
-    "paid_search": paid_search_spend,
-    "youtube": youtube_spend,
-    "sales": revenue
-})
+data = pd.read_csv('data/simulated_mmm_input')
 
 # Normalize data for modeling
 X = data[['facebook', 'paid_search', 'youtube']] / 100000
 y = data['sales'] / 100000
-
 
 
 # Bayesian Linear Regression with PyMC
